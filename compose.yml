@@ -4,6 +4,3 @@ services:
     
     user: ardupilot
     network_mode: host
-    environment:
-      - HEADLESS=1
-    command: /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

@@ -45,3 +45,6 @@ RUN --mount=type=cache,target=/home/ardupilot/.ccache \
  && ./modules/waf/waf-light plane
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+ENV HEADLESS=1
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
