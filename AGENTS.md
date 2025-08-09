@@ -26,3 +26,9 @@
 
 ## No Cursor/Copilot Rules Found
 - No .cursorrules or copilot-instructions.md files present
+
+## Git
+
+- Use git commit -F commit-message.txt to commit changes
+- Commit messages should be clear and descriptive
+- Follow conventional commit style for consistency
