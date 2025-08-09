@@ -3,6 +3,11 @@ name: build-container
 on:
   push:
 
+# Ensure the GITHUB_TOKEN can publish to GHCR
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY: ghcr.io
   REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/flight-controller-sim
@@ -105,5 +110,4 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
-
 
