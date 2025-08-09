@@ -1,12 +1,39 @@
 FROM ghcr.io/wkronmiller/ardupilot:master
 
 USER root
-RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
+
+# Install Gazebo dependencies
+RUN echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
+  > /etc/apt/sources.list.d/gazebo-stable.list
+RUN wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add -
+
+# Install Gazebo dependencies and supervisor
+RUN apt-get update && \
+  apt-get install -y \
+  supervisor \
+  libgz-sim8-dev rapidjson-dev \
+  libopencv-dev libgstreamer1.0-dev \
+  libgstreamer-plugins-base1.0-dev \
+  gstreamer1.0-plugins-bad \
+  gstreamer1.0-libav gstreamer1.0-gl \
+  && rm -rf /var/lib/apt/lists/*
+
 USER ardupilot
 
 RUN mkdir -p /ardupilot
 WORKDIR /ardupilot
-RUN git clone https://github.com/ArduPilot/ardupilot.git source && cd source && git submodule update --init --recursive
+
+
+# Set up Ardupilot simulator
+RUN git clone --depth 1 https://github.com/ArduPilot/ardupilot.git source && cd source && git submodule update --init --recursive --depth 1
+
+# Set up Gazebo plugin
+RUN git clone --depth 1 https://github.com/ArduPilot/ardupilot_gazebo plugin
+ENV GZ_VERSION=harmonic
+RUN cd plugin && mkdir build && cd build && \
+  cmake .. -DMAKE_BUILD_TYPE=RelWithDebInfo \
+   && make -j$(nproc)
+ENV GZ_SIM_SYSTEM_PLUGIN_PATH=/ardupilot/plugin/build
 
 WORKDIR /ardupilot/source
 
