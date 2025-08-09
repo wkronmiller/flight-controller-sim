@@ -3,6 +3,11 @@ name: build-container
 on:
   push:
 
+# Cancel in-progress runs for the same ref when a new push occurs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # Ensure the GITHUB_TOKEN can publish to GHCR
 permissions:
   contents: read
@@ -110,4 +115,3 @@ jobs:
       - name: Inspect image
         run: |
           docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
-
