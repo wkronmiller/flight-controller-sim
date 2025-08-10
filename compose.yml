@@ -1,6 +1,6 @@
 services:
   orange-cube:
+    image: ghcr.io/wkronmiller/flight-controller-sim:master
     build: .
-    
     user: ardupilot
     network_mode: host
